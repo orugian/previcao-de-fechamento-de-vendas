@@ -1,15 +1,51 @@
 # Desafio 003 — Lead Scorer & Decision Engine (RevOps)
-## Solução Baseada no Motor Surv-Bayes ERV (Expected Revenue Velocity) & Copiloto LLM
+## Solução Baseada no Motor Surv-Bayes ERV (Expected Revenue Velocity) & Copiloto DRACO AI
 
 Projeto desenvolvido para a resolução do **Desafio 003 (Lead Scorer)** da trilha **AI Master** do [G4 Educação](https://github.com/Gestao-Quatro-Ponto-Zero/ai-master-challenge).
+
+---
+
+## 👤 Identificação da Submissão
+
+- **Candidato:** Guilherme Orugian
+- **LinkedIn:** [Perfil no LinkedIn](https://www.linkedin.com/in/orugian/)
+- **Desafio Escolhido:** Challenge 003 — Lead Scorer (Área: Vendas / RevOps)
+- **Tipo de Entrega:** Build (Software Funcional em Produção)
+- **Repositório Oficial:** [github.com/orugian/previcao-de-fechamento-de-vendas](https://github.com/orugian/previcao-de-fechamento-de-vendas)
+
+---
+
+## 📌 Executive Summary
+
+Desenvolvemos o **NEXUS RevOps Intelligence Cockpit**, uma solução web funcional construída para sanar a dor central da equipe comercial do G4: vendedores gastando tempo excessivo em negociações zumbis e deixando esfriar oportunidades quentes de alto valor.
+
+Durante a exploração analítica dos dados, realizamos uma **descoberta crítica de Target Leakage**: modelos convencionais de Machine Learning atingiam um ROC-AUC aparentemente alto (~81%) porque a coluna `account` (conta cliente) só é preenchida no CRM quando o negócio avança para o fechamento. Em produção, esses modelos ingênuos condenariam **68% dos leads novos ativos à nota zero** simplesmente por falta de cadastro inicial formal.
+
+Para contornar esse vício estrutural e entregar valor econômico real, formulamos o **Motor Surv-Bayes ERV (Expected Revenue Velocity)**:
+1. **Neutralidade Cadastral:** Ausência de conta é neutra ($AEM = 1.0$), garantindo zero leakage e priorização justa de leads novos.
+2. **Cerca Sanitária (Quarantine Gate):** Expurgou mais de **1.400 negócios zumbis (>110 dias)** da rotina dos vendedores, reduzindo a fila de cada vendedor para uma média enxuta de **~19 negociações vivas**.
+3. **Curva Contínua de Sobrevivência & Modulador Trimestral:** Prioriza pelo throughput comercial ($/dia de ciclo útil) e captura a aceleração de encerramento de trimestre (onde a taxa de fechamento salta de 50% para 80%).
+4. **Comprovação Econômica no Backtest (Q4 2017):** Captura de **69,2% de toda a receita** atuando sobre apenas 20,5% do pipeline — gerando um **Lift de 3,37x (+237%)** sobre o feeling aleatório e **+$215.640,00** sobre a ordenação simples por preço.
+5. **Copiloto DRACO AI (Pydantic):** Diagnósticos táticos e roteiros de abordagem em tempo real via OpenRouter (modelos Hermes-3) e OpenAI, com fallback determinístico local 100% offline (zero risco de quebra sem API key).
+
+---
+
+## 🖥️ Demonstração Visual da Aplicação
+
+### 1. NEXUS Cockpit Tático — Visão Geral do Pipeline & Fila Priorizada
+![NEXUS RevOps Cockpit](artifacts/nexus_draco_cockpit_screenshot.png)
+
+### 2. Drawer de Diagnóstico Detalhado & Mascote 3D DRACO (WebGL / Three.js)
+![Diagnóstico Detalhado e Mascote 3D DRACO](artifacts/nexus_draco_drawer_screenshot.png)
 
 ---
 
 ## 1. Visão Geral da Problemática & O Diagnóstico Crítico
 
 - **Contexto de Vendas B2B:** 35 vendedores distribuídos em escritórios regionais (Central, East, West) gerenciando ~8.800 oportunidades em 7 produtos com tickets variando de **$55 a $26.768**.
-- **A Dor Real de RevOps:** Vendedores gastam tempo excessivo em "deals zumbis" que não vão fechar e deixam esfriar negócios quentes de alto valor. A priorização histórica é feita no "feeling".
-- **A Descoberta de Target Leakage (Onde o Julgamento Humano Superou a IA Ingênua):**
+- **A Dor Real de RevOps:** A Head de Revenue Operations solicitou uma ferramenta prática:
+  > *"Nossos vendedores gastam tempo demais em deals que não vão fechar e deixam oportunidades boas esfriar. Preciso de algo funcional — não um modelo no Jupyter Notebook que ninguém vai usar. Quero uma ferramenta que o vendedor abra, veja o pipeline, e saiba onde focar."*
+- **A Auditoria de Data Leakage (Onde o Julgamento Humano Superou a IA Ingênua):**
   - Modelos tradicionais de classificação binária (*Won* vs. *Lost*) apresentavam um ROC-AUC aparentemente alto (~81%).
   - Nossa auditoria comprovou que **100% dos 6.711 negócios fechados possuem o campo `account` preenchido**, enquanto **68,5% dos negócios abertos em `Engaging` e 67,4% em `Prospecting` não possuem conta vinculada**.
   - No CRM, a razão social formal é vinculada apenas no momento do fechamento. O modelo supervisionado ingênuo aprendeu a detectar se a negociação já estava finalizada, e no mundo real **condenaria 68% das oportunidades ativas à nota zero** simplesmente por falta de preenchimento cadastral de topo de funil!
@@ -73,8 +109,8 @@ O módulo em `src/copilot_llm.py` conecta a inteligência generativa aos fatores
 
 Para atender a todos os critérios eliminatórios do G4 Educação, a entrega conta com dois relatórios detalhados:
 
-- **[Process Log Oficial (Uso Estratégico de IA)](docs/process-log.md):** Registra a decomposição do problema, o conselho de subagentes independentes, a detecção e correção de alucinações e os testes empíricos de leakage.
-- **[Relatório de Revisão Adversarial (Stress-Test)](docs/revisao-adversarial.md):** Auditoria cética simulando a banca avaliadora do G4, testando vetores de falha, resiliência do software e conformidade com a rubrica oficial.
+- 📝 **[Process Log Oficial (Uso Estratégico de IA)](docs/process-log.md):** Registra a decomposição do problema, o conselho de subagentes independentes, a detecção e correção de alucinações e os testes empíricos de leakage.
+- 🛡️ **[Relatório de Revisão Adversarial (Stress-Test)](docs/revisao-adversarial.md):** Auditoria cética simulando a banca avaliadora do G4, testando vetores de falha, resiliência do software e conformidade com a rubrica oficial.
 
 ---
 
@@ -86,21 +122,21 @@ Ambiente Python 3.11 instalado com dependências gerenciadas via `uv`:
 uv pip install -r requirements.txt
 ```
 
-### 1. Subir a Interface Web Cockpit Cyberpunk NEXUS (Flagship com Mascote 3D DRACO)
+### Opção 1: Subir a Interface Web Cockpit Cyberpunk NEXUS (Flagship com Mascote 3D DRACO)
 Interface nativa em SPA de alto desempenho com backend FastAPI e modelo 3D procedural do mascote DRACO em WebGL/Three.js:
 ```powershell
 python web_app.py
 ```
-Acesse no navegador: `http://localhost:8000`.
+Acesse no navegador: **`http://localhost:8000`**.
 - **Destaques:** Latência ultrabaixa (<15ms), visual HUD tático cyberpunk (cobalto elétrico, telemetria em tempo real, sem emojis, bordas táteis de 2-4px), gráficos interativos Chart.js com 100% dos deals mapeados, mascote 3D DRACO interativo com chat direto e drawer com decomposição matemática Surv-Bayes e OpenRouter.
 
-### 2. Subir a Interface Streamlit (Retrocompatível com Tema Cyberpunk NEXUS)
+### Opção 2: Subir a Interface Streamlit (Retrocompatível com Tema Cyberpunk NEXUS)
 ```powershell
 streamlit run app.py
 ```
-Acesse no navegador: `http://localhost:8501`.
+Acesse no navegador: **`http://localhost:8501`**.
 
-### 3. Abrir ou Reexecutar o Jupyter Notebook
+### Opção 3: Abrir ou Reexecutar o Jupyter Notebook
 ```powershell
 # Execução direta via Python
 python build_and_run_notebook.py
@@ -111,7 +147,36 @@ jupyter notebook notebooks/01_eda_preprocessing_and_modeling.ipynb
 
 ---
 
-## 7. Estrutura do Repositório
+## 7. Limitações da Solução Atual & Próximos Passos para Escala Enterprise
+
+Em conformidade com a documentação mínima exigida pelo desafio:
+
+1. **Granularidade das Interações Temporais:**
+   - *Limitação:* O CRM atual registra apenas a data do primeiro contato (`engage_date`) e do fechamento (`close_date`). Não dispomos de telemetria fina de atividades intermediárias (ex.: volume de ligações, e-mails respondidos, reuniões agendadas ou propostas abertas).
+   - *Evolução Enterprise:* Integrar webhooks do CRM (ex.: HubSpot, Salesforce) para capturar eventos de micro-engajamento em tempo real, permitindo refinar o decaimento $S(\tau)$ dinamicamente com base no recuo ou avanço do lead.
+
+2. **Enriquecimento Cadastral em Prospecção Inicial:**
+   - *Limitação:* 68% dos leads novos em `Engaging` e `Prospecting` não possuem a razão social da conta preenchida. Embora o motor Surv-Bayes aplique o Princípio da Ortogonalidade para não penalizá-los, a falta de dados de porte e faturamento limita a precisão da esteira de ativação.
+   - *Evolução Enterprise:* Conectar uma API de enriquecimento de dados corporativos (ex.: Clearbit, Apollo ou Receita Federal) para inferir automaticamente setor e faturamento assim que o e-mail corporativo for registrado.
+
+3. **Loop de Feedback Fechado (Bandits Exploratórios):**
+   - *Limitação:* Se a equipe focar 100% nos leads prioritários, os negócios de prioridade média podem morrer por abandono induzido pela própria ferramenta (profecia autorrealizável).
+   - *Evolução Enterprise:* Reservar 10% da capacidade semanal de contato de cada vendedor para reteste aleatório/exploratório de oportunidades intermediárias (política $\epsilon$-greedy / contextual bandits).
+
+---
+
+## 🎯 8. Recomendações Estratégicas para RevOps & Gestão Comercial
+
+1. **Instituir a "Cerca Sanitária de 110 Dias" como SLA Oficial do CRM:**  
+   Expurgar formalmente os mais de 1.400 negócios zumbis para listas de reaquecimento automatizado por e-mail marketing, proibindo vendedores de despender horas de reunião presencial ou follow-up sênior nesses casos.
+2. **Ritual de Início de Semana (Segunda-Feira 08:30):**  
+   Obrigar cada um dos 35 vendedores a abrir a aba *"Fila de Ação de Segunda-Feira"* e acionar imediatamente os deals classificados no quadrante **🔥 Q1: Hot Closers**.
+3. **Escalonamento Executivo para a Faixa ⚠️ Q2 (High-Value Stalling):**  
+   Notificar automaticamente os gerentes regionais sempre que um deal de ticket alto ($ \ge \$3k$) ultrapassar 45 dias de negociação, acionando visitas conjuntas ou condições especiais de fechamento antes que o deal esfrie.
+
+---
+
+## 📂 9. Estrutura do Repositório
 
 ```text
 previcao-de-fechamento-de-vendas/
@@ -143,12 +208,13 @@ previcao-de-fechamento-de-vendas/
 │   ├── economic_backtest_summary.csv  # Tabela resumo de receita capturada
 │   ├── models/
 │   │   └── surv_bayes_engine.joblib   # Modelo de produção serializado
-│   └── figures/                       # Gráficos de alta resolução (PNG)
-│       ├── 01_pipeline_and_product_economics.png
-│       ├── 02_temporal_dynamics_and_survival_curve.png
-│       ├── 03_agent_product_specialization.png
-│       ├── 06_economic_backtest_revenue_lift.png
-│       └── 07_surv_bayes_matrix_4q.png
+│   ├── figures/                       # Gráficos de alta resolução (PNG)
+│   │   ├── 01_pipeline_and_product_economics.png
+│   │   ├── 02_temporal_dynamics_and_survival_curve.png
+│   │   ├── 03_agent_product_specialization.png
+│   │   ├── 06_economic_backtest_revenue_lift.png
+│   │   └── 07_surv_bayes_matrix_4q.png
+│   └── *.png                          # Screenshots oficiais do Cockpit, Mascote 3D e Drawer
 │
 ├── audits/                            # Scripts de auditoria matemática de vazamento
 │   ├── 01_account_proxy_leakage.py
