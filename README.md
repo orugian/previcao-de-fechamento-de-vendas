@@ -8,7 +8,7 @@ Projeto desenvolvido para a resolução do **Desafio 003 (Lead Scorer)** da tril
 ## 👤 Identificação da Submissão
 
 - **Candidato:** Guilherme Orugian
-- **LinkedIn:** [Perfil no LinkedIn](https://www.linkedin.com/in/orugian/)
+- **LinkedIn:** [linkedin.com/in/guilherme-orugian](https://www.linkedin.com/in/guilherme-orugian/)
 - **Desafio Escolhido:** Challenge 003 — Lead Scorer (Área: Vendas / RevOps)
 - **Tipo de Entrega:** Build (Software Funcional em Produção)
 - **Repositório Oficial:** [github.com/orugian/previcao-de-fechamento-de-vendas](https://github.com/orugian/previcao-de-fechamento-de-vendas)
