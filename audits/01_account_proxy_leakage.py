@@ -1,5 +1,8 @@
-﻿import sys
-sys.path.append('workspace_solution')
+from pathlib import Path
+import sys
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 import pandas as pd, numpy as np
 from sklearn.metrics import roc_auc_score
 from src.data_loader import load_raw_data, clean_and_merge_data

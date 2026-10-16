@@ -37,7 +37,7 @@ Submeter a entrega do **Desafio 003 (Lead Scorer)** a um teste de estresse rigor
 ### Ataque 2: "Como vocês provam que não há Data Leakage no campo `account`?"
 * **Argumento do Cético:** *"No dataset do Kaggle, 100% dos deals ganhos e perdidos têm conta. Como garantir que o modelo não está olhando o futuro?"*
 * **Defesa Comprovada nos Dados:**  
-  Nós mesmos realizamos e documentamos essa auditoria em [workspace_solution/audits/01_account_proxy_leakage.py](<workspace_solution/audits/01_account_proxy_leakage.py>). Mostramos que modelos ingênuos atingiam AUC de ~81% usando `account` como proxy do desfecho.  
+  Nós mesmos realizamos e documentamos essa auditoria em [audits/01_account_proxy_leakage.py](<audits/01_account_proxy_leakage.py>). Mostramos que modelos ingênuos atingiam AUC de ~81% usando `account` como proxy do desfecho.  
   Para neutralizar isso, implementamos o **Princípio da Ortogonalidade Cadastral**: a ausência de conta tem multiplicador neutro ($1.00$). Um deal recente sem conta cadastrada concorre com a mesma probabilidade basal de um deal com conta, permitindo que os 68% de leads novos ativos no CRM sejam priorizados normalmente.
 
 ---
@@ -45,14 +45,14 @@ Submeter a entrega do **Desafio 003 (Lead Scorer)** a um teste de estresse rigor
 ### Ataque 3: "O que acontece se o avaliador rodar a aplicação sem internet ou sem chave da OpenAI?"
 * **Argumento do Cético:** *"Se a aplicação depender da OpenAI, ela vai estourar um erro 401 Unauthorized na tela do avaliador."*
 * **Defesa Comprovada no Código:**  
-  O módulo [workspace_solution/src/copilot_llm.py](<workspace_solution/src/copilot_llm.py>) possui uma camada de abstração com **Modo Offline Grounded**. Se nenhuma chave de API for fornecida, o sistema ativa um motor determinístico local de alta precisão que gera o diagnóstico, a alavanca e o script de WhatsApp no mesmo contrato JSON (`DealCopilotAnalysis`), sem travar a interface e com zero custo.
+  O módulo [src/copilot_llm.py](<src/copilot_llm.py>) possui uma camada de abstração com **Modo Offline Grounded**. Se nenhuma chave de API for fornecida, o sistema ativa um motor determinístico local de alta precisão que gera o diagnóstico, a alavanca e o script de WhatsApp no mesmo contrato JSON (`DealCopilotAnalysis`), sem travar a interface e com zero custo.
 
 ---
 
 ### Ataque 4: "O notebook é apenas um amontoado de código ou conta uma história de dados?"
 * **Argumento do Cético:** *"A maioria dos concorrentes entrega um notebook com código confuso e gráficos genéricos."*
 * **Defesa Comprovada no Notebook:**  
-  O notebook [01_eda_preprocessing_and_modeling.ipynb](<workspace_solution/notebooks/01_eda_preprocessing_and_modeling.ipynb>) foi estruturado seguindo as melhores práticas internacionais: cada célula de código é acompanhada por uma célula analítica em Markdown que interpreta o impacto de negócio dos resultados, culminando em seções obrigatórias de `Q&A`, `Data Analysis Key Findings` e `Insights or Next Steps`.
+  O notebook [notebooks/01_eda_preprocessing_and_modeling.ipynb](<notebooks/01_eda_preprocessing_and_modeling.ipynb>) foi estruturado seguindo as melhores práticas internacionais: cada célula de código é acompanhada por uma célula analítica em Markdown que interpreta o impacto de negócio dos resultados, culminando em seções obrigatórias de `Q&A`, `Data Analysis Key Findings` e `Insights or Next Steps`.
 
 ---
 

@@ -1,6 +1,9 @@
-﻿import sys, warnings
+from pathlib import Path
+import sys, warnings
 warnings.filterwarnings("ignore")
-sys.path.append('workspace_solution')
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 import pandas as pd, numpy as np
 from sklearn.metrics import roc_auc_score, brier_score_loss
 from sklearn.calibration import CalibratedClassifierCV

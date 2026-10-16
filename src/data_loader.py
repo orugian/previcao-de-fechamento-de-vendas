@@ -5,9 +5,11 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-def load_raw_data(data_dir: str = "../data") -> dict[str, pd.DataFrame]:
+def load_raw_data(data_dir: str = "data") -> dict[str, pd.DataFrame]:
     """Load the four raw CSV tables from the data directory."""
     path = Path(data_dir)
+    if not path.exists() and (Path("..") / data_dir).exists():
+        path = Path("..") / data_dir
     return {
         "pipeline": pd.read_csv(path / "sales_pipeline.csv"),
         "accounts": pd.read_csv(path / "accounts.csv"),

@@ -57,7 +57,7 @@ Testado na coorte cega de 2.434 oportunidades abertas em 01/10/2017 sob capacida
 
 ## 🤖 4. Copiloto LLM com Contrato Estrito Pydantic
 
-O módulo em `workspace_solution/src/copilot_llm.py` conecta a inteligência generativa aos fatores matemáticos do deal:
+O módulo em `src/copilot_llm.py` conecta a inteligência generativa aos fatores matemáticos do deal:
 - Consome estritamente: ID, ticket, dias em negociação, probabilidade calibrada, throughput ERV, quadrante da matriz e playbooks.
 - Retorna um esquema estruturado via `DealCopilotAnalysis`:
   - `resumo_executivo`
@@ -83,58 +83,64 @@ Para atender a todos os critérios eliminatórios do G4 Educação, a entrega co
 ### Pré-requisitos
 Ambiente Python 3.11 instalado com dependências gerenciadas via `uv`:
 ```powershell
-uv pip install -r workspace_solution/requirements.txt
+uv pip install -r requirements.txt
 ```
 
 ### 1. Subir a Aplicação Web Interativa (Streamlit)
 ```powershell
-streamlit run workspace_solution/app.py
+streamlit run app.py
 ```
 Acesse no navegador: `http://localhost:8501`.
 
 ### 2. Abrir ou Reexecutar o Jupyter Notebook
 ```powershell
 # Execução direta via Python
-python workspace_solution/build_and_run_notebook.py
+python build_and_run_notebook.py
 
 # Ou abrir no Jupyter Lab / VS Code
-jupyter notebook workspace_solution/notebooks/01_eda_preprocessing_and_modeling.ipynb
+jupyter notebook notebooks/01_eda_preprocessing_and_modeling.ipynb
 ```
 
 ---
 
-## 📂 6. Estrutura do Repositório
+## 📂 7. Estrutura do Repositório
 
 ```text
-Desafio-G4/
+previcao-de-fechamento-de-vendas/
 ├── README.md                          # Este documento de referência executiva
 ├── .gitignore                         # Arquivos ignorados (venv, cache, etc.)
+├── requirements.txt                   # Dependências do projeto
+├── app.py                             # Interface Web completa em Streamlit
+├── build_and_run_notebook.py          # Automação de execução do notebook
 │
-├── workspace_solution/                # Diretório da Solução Completa
-│   ├── app.py                         # Interface Web completa em Streamlit
-│   ├── requirements.txt               # Dependências do projeto
-│   ├── README.md                      # Documentação detalhada da solução
-│   ├── build_and_run_notebook.py      # Automação de execução do notebook
-│   │
-│   ├── src/                           # Módulos Python reutilizáveis
-│   │   ├── data_loader.py             # Carga e higienização das 4 tabelas
-│   │   ├── features.py                # Reconstituição point-in-time e priors
-│   │   ├── surv_bayes_engine.py       # Motor Surv-Bayes ERV e Matriz 4Q
-│   │   └── copilot_llm.py             # Copiloto LLM com schema Pydantic
-│   │
-│   ├── notebooks/                     # Notebook interativo executado
-│   │   └── 01_eda_preprocessing_and_modeling.ipynb
-│   │
-│   ├── artifacts/                     # Modelos e bases exportadas
-│   │   ├── active_scored_deals.csv    # 2.089 oportunidades pontuadas
-│   │   ├── q4_backtest_scored.csv     # Resultados do backtest de Q4
-│   │   ├── economic_backtest_summary.csv # Tabela resumo de receita capturada
-│   │   ├── models/
-│   │   │   └── surv_bayes_engine.joblib # Modelo de produção serializado
-│   │   └── figures/                   # Gráficos de alta resolução (PNG)
-│   │
-│   ├── proposals/                     # Pareceres detalhados dos 3 subagentes
-│   └── audits/                        # Scripts de auditoria matemática de vazamento
+├── src/                               # Módulos Python reutilizáveis
+│   ├── data_loader.py                 # Carga e higienização das 4 tabelas
+│   ├── features.py                    # Reconstituição point-in-time e priors
+│   ├── surv_bayes_engine.py           # Motor Surv-Bayes ERV e Matriz 4Q
+│   ├── copilot_llm.py                 # Copiloto LLM com schema Pydantic
+│   └── modeling.py                    # Pipeline de calibração e TreeSHAP
+│
+├── notebooks/                         # Notebook interativo executado
+│   └── 01_eda_preprocessing_and_modeling.ipynb
+│
+├── artifacts/                         # Modelos e bases exportadas
+│   ├── active_scored_deals.csv        # 2.089 oportunidades pontuadas
+│   ├── q4_backtest_scored.csv         # Resultados do backtest de Q4
+│   ├── economic_backtest_summary.csv  # Tabela resumo de receita capturada
+│   ├── models/
+│   │   └── surv_bayes_engine.joblib   # Modelo de produção serializado
+│   └── figures/                       # Gráficos de alta resolução (PNG)
+│       ├── 01_pipeline_and_product_economics.png
+│       ├── 02_temporal_dynamics_and_survival_curve.png
+│       ├── 03_agent_product_specialization.png
+│       ├── 06_economic_backtest_revenue_lift.png
+│       └── 07_surv_bayes_matrix_4q.png
+│
+├── audits/                            # Scripts de auditoria matemática de vazamento
+│   ├── 01_account_proxy_leakage.py
+│   ├── 02_static_feature_signal.py
+│   ├── 03_honest_rolling_cv_hparam_grid.py
+│   └── 04_honest_backtest_vs_rules.py
 │
 ├── data/                              # Datasets brutos do CRM (CC0)
 │   ├── sales_pipeline.csv
@@ -143,5 +149,7 @@ Desafio-G4/
 │   ├── sales_teams.csv
 │   └── metadata.csv
 │
-└── docs/                              # Enunciados e guias do G4
+└── docs/                              # Governança e avaliação oficial
+    ├── process-log.md                 # Process Log oficial com evidências do uso de IA
+    └── revisao-adversarial.md         # Stress-test adversarial da entrega
 ```

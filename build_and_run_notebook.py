@@ -65,7 +65,7 @@ plt.rcParams["axes.titlesize"] = 12
 plt.rcParams["axes.titleweight"] = "bold"
 
 ROOT_DIR = Path("..").resolve()
-DATA_DIR = ROOT_DIR.parent / "data"
+DATA_DIR = ROOT_DIR / "data"
 ARTIFACTS_DIR = ROOT_DIR / "artifacts"
 FIGURES_DIR = ARTIFACTS_DIR / "figures"
 MODELS_DIR = ARTIFACTS_DIR / "models"
@@ -616,13 +616,13 @@ cells.append(nbf.v4.new_markdown_cell("""### Q&A
 
 ### Insights or Next Steps
 
-- **Integração com o Copiloto LLM:** Conectar o output determinístico de quadrantes, dias de negociação, drivers positivos e gargalos de risco diretamente ao copiloto em `workspace_solution/src/copilot_llm.py` usando validação de schema Pydantic, garantindo recomendações táticas sem risco de alucinação.
-- **Interface Web Funcional em Streamlit:** Desenvolver o cockpit interativo em `workspace_solution/app.py` com visão personalizada por vendedor, gerente e regional, permitindo visualização da fila de segunda-feira e simulação em tempo real do backtest financeiro.
+- **Integração com o Copiloto LLM:** Conectar o output determinístico de quadrantes, dias de negociação, drivers positivos e gargalos de risco diretamente ao copiloto em `src/copilot_llm.py` usando validação de schema Pydantic, garantindo recomendações táticas sem risco de alucinação.
+- **Interface Web Funcional em Streamlit:** Desenvolver o cockpit interativo em `app.py` com visão personalizada por vendedor, gerente e regional, permitindo visualização da fila de segunda-feira e simulação em tempo real do backtest financeiro.
 """))
 
 nb["cells"] = cells
 
-nb_path = Path("workspace_solution/notebooks/01_eda_preprocessing_and_modeling.ipynb")
+nb_path = Path("notebooks/01_eda_preprocessing_and_modeling.ipynb")
 nb_path.parent.mkdir(parents=True, exist_ok=True)
 
 print(f"Executing all cells in-process and populating outputs for {nb_path}...")
