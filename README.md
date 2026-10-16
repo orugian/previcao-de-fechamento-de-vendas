@@ -5,7 +5,7 @@ Projeto desenvolvido para a resolução do **Desafio 003 (Lead Scorer)** da tril
 
 ---
 
-## 📌 1. Visão Geral da Problemática & O Diagnóstico Crítico
+## 1. Visão Geral da Problemática & O Diagnóstico Crítico
 
 - **Contexto de Vendas B2B:** 35 vendedores distribuídos em escritórios regionais (Central, East, West) gerenciando ~8.800 oportunidades em 7 produtos com tickets variando de **$55 a $26.768**.
 - **A Dor Real de RevOps:** Vendedores gastam tempo excessivo em "deals zumbis" que não vão fechar e deixam esfriar negócios quentes de alto valor. A priorização histórica é feita no "feeling".
@@ -17,7 +17,7 @@ Projeto desenvolvido para a resolução do **Desafio 003 (Lead Scorer)** da tril
 
 ---
 
-## 🚀 2. A Solução Implementada: Motor Surv-Bayes ERV
+## 2. A Solução Implementada: Motor Surv-Bayes ERV
 
 Em vez de forçar um classificador binário sobre ruído e vazamento, implementamos o **Motor Surv-Bayes ERV**:
 
@@ -28,21 +28,21 @@ Em vez de forçar um classificador binário sobre ruído e vazamento, implementa
 3. **Curva Contínua de Sobrevivência $S(\tau)$:**  
    Modela a probabilidade real de fechamento em função da idade da negociação:
    - **0 a 15 dias:** maturação inicial (50% a 70%).
-   - **15 a 45 dias (*Sweet Spot*):** ápice de conversão.
+   - **15 a 45 dias (Sweet Spot):** ápice de conversão.
    - **46 a 110 dias:** decaimento exponencial por atrito.
    - **> 110 dias:** probabilidade zero (limite empírico histórico comprovado de 138 dias).
 4. **Modulador de Sazonalidade Trimestral $\Omega_{\text{quarter}}$:**  
    Acelera a priorização de negociações em maturação nos meses de fechamento de trimestre (março, junho, setembro e dezembro), onde o fechamento salta historicamente de ~50% para ~80%.
 5. **Classificação na Matriz 4Q:**
-   - 🔥 **Q1: Hot Closers (Ataque Imediato):** Alto ticket na janela de ouro (15 a 45 dias).
-   - ⚠️ **Q2: High-Value Stalling (Alerta Executivo):** Negócios caros esfriando (46 a 90 dias) para intervenção de liderança.
-   - ⚡ **Q3: Quick Wins (Giro Rápido):** Produtos transacionais (< $1.500) para compor meta semanal de volume.
-   - 🛑 **Q4: Quarentena / Zumbis:** Estagnados (>110 dias) para descarte ou nutrição automática.
-   - 🌱 **Prospecção / Ativação Inicial:** Leads novos sem data de contato (`Prospecting`).
+   - **[Q1] Hot Closers (Ataque Imediato):** Alto ticket na janela de ouro (15 a 45 dias).
+   - **[Q2] High-Value Stalling (Alerta Executivo):** Negócios caros esfriando (46 a 90 dias) para intervenção de liderança.
+   - **[Q3] Quick Wins (Giro Rápido):** Produtos transacionais (< $1.500) para compor meta semanal de volume.
+   - **[Q4] Quarentena / Zumbis:** Estagnados (>110 dias) para descarte ou nutrição automática.
+   - **Prospecção / Ativação Inicial:** Leads novos sem data de contato (`Prospecting`).
 
 ---
 
-## 📈 3. Comprovação Econômica (Backtesting Out-of-Time Q4 2017)
+## 3. Comprovação Econômica (Backtesting Out-of-Time Q4 2017)
 
 Testado na coorte cega de 2.434 oportunidades abertas em 01/10/2017 sob capacidade restrita de **20,5% da carteira (Top 500 deals)**:
 
@@ -55,7 +55,7 @@ Testado na coorte cega de 2.434 oportunidades abertas em 01/10/2017 sob capacida
 
 ---
 
-## 🤖 4. Copiloto LLM com Contrato Estrito Pydantic
+## 4. Copiloto LLM com Contrato Estrito Pydantic
 
 O módulo em `src/copilot_llm.py` conecta a inteligência generativa aos fatores matemáticos do deal:
 - Consome estritamente: ID, ticket, dias em negociação, probabilidade calibrada, throughput ERV, quadrante da matriz e playbooks.
@@ -65,20 +65,20 @@ O módulo em `src/copilot_llm.py` conecta a inteligência generativa aos fatores
   - `alavanca_comercial`
   - `acao_imediata`
   - `roteiro_contato` (script pronto de WhatsApp/E-mail para o vendedor copiar em 1 clique).
-- **Resiliência e Zero Custo:** Possui suporte a chave da OpenAI (`gpt-4o-mini`), com fallback automático para o motor determinístico offline caso executado sem chave.
+- **Resiliência e Zero Custo:** Suporte nativo a OpenRouter (modelos Hermes-3 e DeepHermes), OpenAI e fallback determinístico offline.
 
 ---
 
-## 📑 5. Governança, Process Log e Revisão Adversarial
+## 5. Governança, Process Log e Revisão Adversarial
 
 Para atender a todos os critérios eliminatórios do G4 Educação, a entrega conta com dois relatórios detalhados:
 
-- 📝 **[Process Log Oficial (Uso Estratégico de IA)](docs/process-log.md):** Registra a decomposição do problema, o conselho de subagentes independentes, a detecção e correção de alucinações e os testes empíricos de leakage.
-- 🛡️ **[Relatório de Revisão Adversarial (Stress-Test)](docs/revisao-adversarial.md):** Auditoria cética simulando a banca avaliadora do G4, testando vetores de falha, resiliência do software e conformidade com a rubrica oficial.
+- **[Process Log Oficial (Uso Estratégico de IA)](docs/process-log.md):** Registra a decomposição do problema, o conselho de subagentes independentes, a detecção e correção de alucinações e os testes empíricos de leakage.
+- **[Relatório de Revisão Adversarial (Stress-Test)](docs/revisao-adversarial.md):** Auditoria cética simulando a banca avaliadora do G4, testando vetores de falha, resiliência do software e conformidade com a rubrica oficial.
 
 ---
 
-## 💻 6. Como Executar a Solução em 1 Comando
+## 6. Como Executar a Solução em 1 Comando
 
 ### Pré-requisitos
 Ambiente Python 3.11 instalado com dependências gerenciadas via `uv`:
@@ -86,13 +86,21 @@ Ambiente Python 3.11 instalado com dependências gerenciadas via `uv`:
 uv pip install -r requirements.txt
 ```
 
-### 1. Subir a Aplicação Web Interativa (Streamlit)
+### 1. Subir a Interface Web Cockpit Cyberpunk NEXUS (Flagship com Mascote 3D DRACO)
+Interface nativa em SPA de alto desempenho com backend FastAPI e modelo 3D procedural do mascote DRACO em WebGL/Three.js:
+```powershell
+python web_app.py
+```
+Acesse no navegador: `http://localhost:8000`.
+- **Destaques:** Latência ultrabaixa (<15ms), visual HUD tático cyberpunk (cobalto elétrico, telemetria em tempo real, sem emojis, bordas táteis de 2-4px), gráficos interativos Chart.js com 100% dos deals mapeados, mascote 3D DRACO interativo com chat direto e drawer com decomposição matemática Surv-Bayes e OpenRouter.
+
+### 2. Subir a Interface Streamlit (Retrocompatível com Tema Cyberpunk NEXUS)
 ```powershell
 streamlit run app.py
 ```
 Acesse no navegador: `http://localhost:8501`.
 
-### 2. Abrir ou Reexecutar o Jupyter Notebook
+### 3. Abrir ou Reexecutar o Jupyter Notebook
 ```powershell
 # Execução direta via Python
 python build_and_run_notebook.py
@@ -103,21 +111,27 @@ jupyter notebook notebooks/01_eda_preprocessing_and_modeling.ipynb
 
 ---
 
-## 📂 7. Estrutura do Repositório
+## 7. Estrutura do Repositório
 
 ```text
 previcao-de-fechamento-de-vendas/
 ├── README.md                          # Este documento de referência executiva
 ├── .gitignore                         # Arquivos ignorados (venv, cache, etc.)
-├── requirements.txt                   # Dependências do projeto
-├── app.py                             # Interface Web completa em Streamlit
+├── requirements.txt                   # Dependências do projeto (com FastAPI e Uvicorn)
+├── web_app.py                         # Backend FastAPI de alta performance do Cockpit NEXUS
+├── app.py                             # Interface Streamlit com tema NEXUS e suporte OpenRouter
 ├── build_and_run_notebook.py          # Automação de execução do notebook
+│
+├── web/                               # Frontend SPA Cockpit Cyberpunk NEXUS (Three.js 3D DRACO)
+│   ├── index.html                     # Estrutura semântica do Cockpit HUD, Mascote 3D e Drawer
+│   ├── style.css                      # Estilos táticos (tokens cobalto #0000F2, marinho #000091, slate #616191)
+│   └── app.js                         # Engine reativo em ES Modules, Three.js 3D e chat com DRACO AI
 │
 ├── src/                               # Módulos Python reutilizáveis
 │   ├── data_loader.py                 # Carga e higienização das 4 tabelas
 │   ├── features.py                    # Reconstituição point-in-time e priors
 │   ├── surv_bayes_engine.py           # Motor Surv-Bayes ERV e Matriz 4Q
-│   ├── copilot_llm.py                 # Copiloto LLM com schema Pydantic
+│   ├── copilot_llm.py                 # Copiloto LLM com suporte OpenRouter, chat direto e fallback
 │   └── modeling.py                    # Pipeline de calibração e TreeSHAP
 │
 ├── notebooks/                         # Notebook interativo executado

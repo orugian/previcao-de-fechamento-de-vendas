@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS // RevOps Intelligence Cockpit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Condensed:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="nexus-theme">
+
+  <!-- TOP HUD BAR (TELEMETRY & BRAND) -->
+  <header class="hud-header" data-ui="cockpit-header">
+    <div class="hud-brand">
+      <div class="brand-monogram">
+        <span class="mono-glitch">X</span>
+      </div>
+      <div class="brand-titles">
+        <div class="brand-lab">NEXUS COCKPIT // AI ENGINE</div>
+        <div class="brand-system">REVOPS DECISION COCKPIT</div>
+      </div>
+    </div>
+
+    <div class="hud-telemetry">
+      <div class="telemetry-item">
+        <span class="telemetry-label">ENGINE:</span>
+        <span class="telemetry-value active-pulse">SURV-BAYES ERV v2.4</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">LEAKAGE GATE:</span>
+        <span class="telemetry-value zero-leakage">ZERO-LEAKAGE ENFORCED</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">COPILOT:</span>
+        <span class="telemetry-value" id="copilot-provider-badge">DRACO AI // ONLINE</span>
+      </div>
+    </div>
+
+    <div class="hud-actions">
+      <button class="btn-tactical btn-config" id="btn-open-settings" title="Configurar OpenRouter / Chave LLM">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>LLM NEURAL KEY</span>
+      </button>
+      <button class="btn-tactical btn-refresh" id="btn-refresh-data" title="Recarregar Dados">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="cockpit-container">
+
+    <!-- CONTROL CONSOLE (FILTER STRIP) -->
+    <section class="control-console" data-ui="filters">
+      <div class="console-row profile-row">
+        <div class="profile-toggle-group">
+          <button class="btn-profile active" data-mode="agent">VENDEDOR // COCKPIT PESSOAL</button>
+          <button class="btn-profile" data-mode="macro">GESTÃO // VISÃO MACRO REVOPS</button>
+        </div>
+
+        <div class="context-tag" id="context-info-tag">
+          <span class="tag-label">ESCOPO:</span>
+          <span class="tag-content" id="context-info-text">Selecione o vendedor para carregar a carteira de segunda-feira.</span>
+        </div>
+      </div>
+
+      <div class="console-row selectors-row">
+        <!-- VENDEDOR SELECT -->
+        <div class="selector-field" id="wrap-agent-select">
+          <label for="select-agent">VENDEDOR COMERCIAL</label>
+          <select id="select-agent">
+            <option value="">Carregando vendedores...</option>
+          </select>
+        </div>
+
+        <!-- ESCRITÓRIO REGIONAL -->
+        <div class="selector-field" id="wrap-region-select" style="display:none;">
+          <label for="select-region">ESCRITÓRIO REGIONAL</label>
+          <select id="select-region">
+            <option value="Todas">Todas as Regionais</option>
+          </select>
+        </div>
+
+        <!-- GERÊNCIA -->
+        <div class="selector-field" id="wrap-manager-select" style="display:none;">
+          <label for="select-manager">GERENTE DE VENDAS</label>
+          <select id="select-manager">
+            <option value="Todos">Todos os Gerentes</option>
+          </select>
+        </div>
+
+        <!-- QUADRANTE 4Q -->
+        <div class="selector-field">
+          <label for="select-quadrant">SEGMENTO DO FUNIL / QUADRANTE</label>
+          <select id="select-quadrant">
+            <option value="Todos">Todos os Segmentos</option>
+          </select>
+        </div>
+
+        <!-- ESTÁGIO FUNIL -->
+        <div class="selector-field">
+          <label for="select-stage">ESTÁGIO NO CRM</label>
+          <select id="select-stage">
+            <option value="Todos">Todos os Estágios</option>
+            <option value="Engaging">Engaging (Negociação Ativa)</option>
+            <option value="Prospecting">Prospecting (Leads Novos)</option>
+          </select>
+        </div>
+
+        <!-- BUSCA RÁPIDA -->
+        <div class="selector-field search-field">
+          <label for="input-search">BUSCA RÁPIDA</label>
+          <div class="input-search-wrap">
+            <input type="text" id="input-search" placeholder="Buscar por ID, Conta, Produto...">
+            <button id="btn-clear-search" class="btn-clear" style="display:none;">×</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI STRIP (MISSION STATS) -->
+    <section class="kpi-strip" data-ui="telemetry-strip">
+      <div class="kpi-card" id="kpi-total">
+        <div class="kpi-meta">OPORTUNIDADES CRM</div>
+        <div class="kpi-num" id="val-total-deals">0</div>
+        <div class="kpi-sub">Total de registros no CRM</div>
+      </div>
+
+      <div class="kpi-card kpi-highlight" id="kpi-active">
+        <div class="kpi-meta">FILA ATIVA ÚTIL (SEM ZUMBIS)</div>
+        <div class="kpi-num" id="val-active-deals">0</div>
+        <div class="kpi-sub" id="val-zombie-delta">-0 zumbis eliminados</div>
+      </div>
+
+      <div class="kpi-card" id="kpi-pipeline">
+        <div class="kpi-meta">PIPELINE ATIVO EM RISCO</div>
+        <div class="kpi-num" id="val-pipeline-usd">$0</div>
+        <div class="kpi-sub">Valor de tabela de deals vivos</div>
+      </div>
+
+      <div class="kpi-card kpi-velocity" id="kpi-erv">
+        <div class="kpi-meta">THROUGHPUT TOTAL (ERV)</div>
+        <div class="kpi-num" id="val-erv-usd">$0.00/dia</div>
+        <div class="kpi-sub">Velocidade diária de receita esperada</div>
+      </div>
+
+      <div class="kpi-card kpi-danger" id="kpi-quarantine">
+        <div class="kpi-meta">CERCA SANITÁRIA (>110 DIAS)</div>
+        <div class="kpi-num" id="val-quarantine-count">0</div>
+        <div class="kpi-sub">Deals zumbis em quarentena</div>
+      </div>
+    </section>
+
+    <!-- TABS NAVIGATION -->
+    <nav class="cockpit-tabs" data-ui="nav-tabs">
+      <button class="tab-button active" data-tab="tab-action">
+        <span class="tab-code">01</span>
+        <span class="tab-title">Fila de Ação de Segunda-Feira</span>
+      </button>
+      <button class="tab-button" data-tab="tab-quarantine">
+        <span class="tab-code">02</span>
+        <span class="tab-title">Cerca Sanitária (Zumbis)</span>
+      </button>
+      <button class="tab-button" data-tab="tab-visual">
+        <span class="tab-code">03</span>
+        <span class="tab-title">Diagnóstico Visual & Matriz 4Q</span>
+      </button>
+      <button class="tab-button" data-tab="tab-backtest">
+        <span class="tab-code">04</span>
+        <span class="tab-title">Backtesting & Auditoria Leakage</span>
+      </button>
+    </nav>
+
+    <!-- TAB CONTENTS -->
+    <div class="tab-panels">
+
+      <!-- ================= TAB 1: FILA DE AÇÃO ================= -->
+      <section class="tab-panel active" id="tab-action">
+        
+        <!-- LEAD #1 SPOTLIGHT (HERO PRIORITY) -->
+        <div class="hero-spotlight" id="hero-spotlight-card" style="display:none;">
+          <div class="spotlight-badge">
+            <span class="badge-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </span>
+            <span>LEAD PRIORITÁRIO 01 — ATAQUE IMEDIATO</span>
+          </div>
+
+          <div class="spotlight-body">
+            <div class="spotlight-main">
+              <div class="spotlight-id-title">
+                <span class="spotlight-id" id="spot-opp-id">OPP-XXXX</span>
+                <span class="spotlight-product" id="spot-product">Produto</span>
+                <span class="spotlight-price" id="spot-price">$0</span>
+              </div>
+              <div class="spotlight-account" id="spot-account">Conta Cliente</div>
+              <div class="spotlight-meta">
+                <span>Vendedor: <strong id="spot-agent">-</strong></span>
+                <span>Idade: <strong id="spot-age">0 dias</strong></span>
+                <span>Estágio: <strong id="spot-stage">-</strong></span>
+              </div>
+            </div>
+
+            <div class="spotlight-metrics">
+              <div class="spot-metric-cell">
+                <div class="sm-label">LEAD SCORE</div>
+                <div class="sm-value highlight-cyan" id="spot-score">0/100</div>
+              </div>
+              <div class="spot-metric-cell">
+                <div class="sm-label">PROB. VITÓRIA</div>
+                <div class="sm-value" id="spot-prob">0%</div>
+              </div>
+              <div class="spot-metric-cell">
+                <div class="sm-label">THROUGHPUT ERV</div>
+                <div class="sm-value highlight-green" id="spot-erv">$0/dia</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="spotlight-footer">
+            <div class="spotlight-playbook">
+              <span class="playbook-label">DIRETRIZ TÁTICA:</span>
+              <span class="playbook-text" id="spot-playbook">-</span>
+            </div>
+            <button class="btn-tactical btn-primary" id="btn-spot-diagnose">
+              <span>DIAGNÓSTICO COM COPILOTO IA</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ACTION QUEUE TABLE HEADER -->
+        <div class="table-toolbar">
+          <div class="table-heading">
+            <h3>TABELA DE NEGOCIAÇÕES VIVAS</h3>
+            <span class="table-counter" id="table-counter-text">Carregando oportunidades ativas...</span>
+          </div>
+          <div class="table-actions">
+            <button class="btn-tactical btn-export" id="btn-export-active">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              <span>EXPORTAR FILA ATIVA (CSV)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TABLE CONTAINER -->
+        <div class="table-responsive">
+          <table class="tactical-table" id="table-deals">
+            <thead>
+              <tr>
+                <th data-sort="opportunity_id">ID DEAL</th>
+                <th data-sort="sales_agent">VENDEDOR</th>
+                <th data-sort="product">PRODUTO</th>
+                <th data-sort="account">CONTA CLIENTE</th>
+                <th data-sort="deal_stage">ESTÁGIO</th>
+                <th data-sort="deal_age_days">IDADE</th>
+                <th data-sort="sales_price">TICKET</th>
+                <th data-sort="calibrated_prob_won">PROB.</th>
+                <th data-sort="erv_usd_per_day">ERV ($/DIA)</th>
+                <th data-sort="lead_score" class="sort-active">SCORE</th>
+                <th>SEGMENTO</th>
+                <th>AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody id="deals-table-body">
+              <tr>
+                <td colspan="12" class="table-loading">Carregando dados do CRM...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 2: CERCA SANITÁRIA ================= -->
+      <section class="tab-panel" id="tab-quarantine">
+        <div class="panel-banner banner-quarantine">
+          <div class="banner-icon-svg">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FF3366" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="banner-content">
+            <h4>A LEI DE SOBREVIVÊNCIA COMERCIAL: LIMITE HISTÓRICO DE 110 DIAS</h4>
+            <p>
+              A auditoria matemática comprovou que nenhum negócio na história do CRM fechou após 138 dias. 
+              Negócios com mais de <strong>110 dias em aberto</strong> possuem taxa estatística de conversão de <strong>0,00%</strong>. 
+              Ao expurgar esses zumbis da tela diária dos vendedores, recuperamos o foco dos representantes comerciais sobre negociações reais.
+            </p>
+          </div>
+          <div class="banner-action">
+            <button class="btn-tactical btn-danger" id="btn-export-zombies">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              <span>EXPORTAR ZUMBIS P/ NUTRIÇÃO (CSV)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="quarantine-kpis">
+          <div class="kpi-mini">
+            <span class="km-label">OPORTUNIDADES EM QUARENTENA</span>
+            <span class="km-val danger" id="qz-count">0</span>
+          </div>
+          <div class="kpi-mini">
+            <span class="km-label">CAPITAL ZUMBI TRAVADO</span>
+            <span class="km-val danger" id="qz-volume">$0</span>
+          </div>
+          <div class="kpi-mini">
+            <span class="km-label">IDADE MÉDIA DOS ZUMBIS</span>
+            <span class="km-val" id="qz-avg-age">0 dias</span>
+          </div>
+        </div>
+
+        <div class="table-toolbar">
+          <div class="table-heading">
+            <h3>REGISTROS RETIDOS NA CERCA SANITÁRIA</h3>
+            <span class="table-counter" id="quarantine-counter-text">Total retido na cerca sanitária</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="tactical-table table-zombies" id="table-zombies">
+            <thead>
+              <tr>
+                <th>ID DEAL</th>
+                <th>VENDEDOR</th>
+                <th>PRODUTO</th>
+                <th>CONTA</th>
+                <th>DIAS EM ABERTO</th>
+                <th>TICKET TABELA</th>
+                <th>DIAGNÓSTICO DE ESTAGNAÇÃO</th>
+                <th>DIRETRIZ DE GOVERNANÇA</th>
+              </tr>
+            </thead>
+            <tbody id="zombies-table-body">
+              <tr>
+                <td colspan="8" class="table-loading">Carregando zumbis da cerca sanitária...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: DIAGNÓSTICO VISUAL ================= -->
+      <section class="tab-panel" id="tab-visual">
+        
+        <div class="charts-grid">
+          <!-- CHART 1: SCATTER RADAR -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4>THROUGHPUT ERV ($/DIA) VS. IDADE DO DEAL</h4>
+              <span class="chart-badge">Fila Ativa Útil (100% dos Deals Mapeados)</span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="scatterChart"></canvas>
+            </div>
+            <div class="chart-caption">Eixo X: Dias em Negociação | Eixo Y: Throughput Comercial ERV ($/dia)</div>
+          </div>
+
+          <!-- CHART 2: QUADRANTS DISTRIBUTION -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4>DISTRIBUIÇÃO DE OPORTUNIDADES POR SEGMENTO</h4>
+              <span class="chart-badge">Volumetria da Carteira</span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="quadrantsChart"></canvas>
+            </div>
+            <div class="chart-caption">Segmentação estratégica conforme matriz de decisão 4Q</div>
+          </div>
+        </div>
+
+        <!-- 4Q MATRIX CARDS -->
+        <div class="quadrants-info-strip">
+          <div class="quadrant-card q1">
+            <div class="qc-header">
+              <span class="qc-tag">Q1</span>
+              <h5>HOT CLOSERS</h5>
+            </div>
+            <p>Ticket alto (≥ $4.000) na janela de ouro (15 a 45 dias). Ápice de probabilidade e velocidade.</p>
+            <div class="qc-action">Ação: Ligação imediata na segunda-feira.</div>
+          </div>
+
+          <div class="quadrant-card q2">
+            <div class="qc-header">
+              <span class="qc-tag">Q2</span>
+              <h5>HIGH-VALUE STALLING</h5>
+            </div>
+            <p>Ticket alto (≥ $3.000) esfriando (46 a 90 dias). Risco crítico de perda se não houver destrave.</p>
+            <div class="qc-action">Ação: Envolvimento de gerência / condição executiva.</div>
+          </div>
+
+          <div class="quadrant-card q3">
+            <div class="qc-header">
+              <span class="qc-tag">Q3</span>
+              <h5>QUICK WINS</h5>
+            </div>
+            <p>Produtos transacionais (< $1.500) em idade fresca. Giro rápido e baixo atrito comercial.</p>
+            <div class="qc-action">Ação: Envio de link de fechamento direto.</div>
+          </div>
+
+          <div class="quadrant-card q4">
+            <div class="qc-header">
+              <span class="qc-tag">Q4</span>
+              <h5>QUARENTENA ZUMBIS</h5>
+            </div>
+            <p>Oportunidades com >110 dias sem avanço. Probabilidade histórica zero de vitória.</p>
+            <div class="qc-action">Ação: Descarte do CRM ou automação de marketing.</div>
+          </div>
+        </div>
+
+        <!-- DIAGNOSTIC FIGURES CAROUSEL -->
+        <div class="figures-gallery-section">
+          <div class="table-heading">
+            <h3>PAINEL DE EVIDÊNCIAS GRÁFICAS DE ALTA RESOLUÇÃO</h3>
+            <span class="table-counter">Gráficos de publicação gerados pelo motor analítico</span>
+          </div>
+          <div class="figures-grid">
+            <div class="figure-item">
+              <div class="fig-title">Curva de Sobrevivência & Dinâmica Temporal</div>
+              <img src="/figures/02_temporal_dynamics_and_survival_curve.png" alt="Curva de Sobrevivência" loading="lazy">
+            </div>
+            <div class="figure-item">
+              <div class="fig-title">Matriz 4Q Surv-Bayes ERV</div>
+              <img src="/figures/07_surv_bayes_matrix_4q.png" alt="Matriz 4Q" loading="lazy">
+            </div>
+            <div class="figure-item">
+              <div class="fig-title">Economia de Produtos e Pipeline</div>
+              <img src="/figures/01_pipeline_and_product_economics.png" alt="Economia de Pipeline" loading="lazy">
+            </div>
+            <div class="figure-item">
+              <div class="fig-title">Lift Econômico no Backtest Q4</div>
+              <img src="/figures/06_economic_backtest_revenue_lift.png" alt="Lift Backtest" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 4: BACKTESTING & LEAKAGE ================= -->
+      <section class="tab-panel" id="tab-backtest">
+        <div class="backtest-summary-card">
+          <div class="bs-header">
+            <h4>COMPROVAÇÃO ECONÔMICA QUANTITATIVA — BACKTEST OUT-OF-TIME Q4 2017</h4>
+            <span class="bs-badge">2.434 Negócios Testados Cega e Honestamente</span>
+          </div>
+          <p>
+            Para comprovar a superioridade do modelo, avaliamos seu desempenho em uma coorte temporal estrita no quarto trimestre de 2017 (01/10/2017 a 31/12/2017), 
+            simulando a capacidade operacional real de 35 vendedores limitados a atender apenas <strong>20,5% do pipeline aberto (Top 500 deals)</strong>.
+          </p>
+
+          <div class="table-responsive">
+            <table class="tactical-table table-backtest">
+              <thead>
+                <tr>
+                  <th>ESTRATÉGIA DE PRIORIZAÇÃO</th>
+                  <th>RECEITA CAPTURADA (USD)</th>
+                  <th>% DA RECEITA TOTAL Q4</th>
+                  <th>LIFT VS. FEELING</th>
+                  <th>GANHO VS. MAIOR TICKET</th>
+                </tr>
+              </thead>
+              <tbody id="backtest-table-body">
+                <tr>
+                  <td><strong>Motor Surv-Bayes ERV (Nossa Solução)</strong></td>
+                  <td class="highlight-green"><strong>$877.572,00</strong></td>
+                  <td class="highlight-cyan"><strong>69,2%</strong></td>
+                  <td class="highlight-cyan"><strong>3,37x (+237%)</strong></td>
+                  <td class="highlight-green"><strong>+$215.640,00</strong></td>
+                </tr>
+                <tr>
+                  <td>Ordenação por Maior Ticket ($)</td>
+                  <td>$661.932,00</td>
+                  <td>52,2%</td>
+                  <td>2,54x</td>
+                  <td>$0,00 (Base Preço)</td>
+                </tr>
+                <tr>
+                  <td>Ordenação por Probabilidade P(Won)</td>
+                  <td>$551.844,00</td>
+                  <td>43,5%</td>
+                  <td>2,12x</td>
+                  <td>-$110.088,00</td>
+                </tr>
+                <tr>
+                  <td>Escolha no Feeling (Aleatório)</td>
+                  <td class="danger">$260.685,09</td>
+                  <td class="danger">20,5%</td>
+                  <td>1,00x</td>
+                  <td class="danger">-$401.246,91</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="narrative-split">
+          <div class="narrative-box">
+            <div class="nb-title">
+              <span class="nb-icon-svg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00FF9D" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              </span>
+              <h4>POR QUE O MOTOR SUPEROU A ORDENAÇÃO POR MAIOR TICKET EM +$215K?</h4>
+            </div>
+            <p>
+              Vendedores que priorizam unicamente pelo maior preço caem na armadilha clássica de gastar seus dias ligando para propostas enterprise de <strong>$26.000</strong> 
+              que já estão zumbificadas há 300 dias no CRM. O cliente já optou por outro fornecedor, mas ninguém arquivou o chamado.
+            </p>
+            <p>
+              O motor Surv-Bayes calcula o <strong>Throughput Econômico Instantâneo (ERV)</strong>: penaliza de forma contínua o atrito temporal via curva de sobrevivência $S(\tau)$, 
+              redirecionando a capacidade da equipe para negócios vivos com alta velocidade de fechamento.
+            </p>
+          </div>
+
+          <div class="narrative-box">
+            <div class="nb-title">
+              <span class="nb-icon-svg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><path d="M11 8v6M8 11h6"/></svg>
+              </span>
+              <h4>A DESCOBERTA CRÍTICA DO DATA LEAKAGE (ONDE A IA INGÊNUA FALHA)</h4>
+            </div>
+            <p>
+              Modelos supervisionados tradicionais de ML (como XGBoost ou LightGBM puros) apresentavam AUC aparente de ~81%. 
+              Nossa auditoria profunda revelou que <strong>100% dos negócios fechados tinham o campo `account` preenchido</strong>, enquanto 
+              <strong>68% dos leads novos em `Engaging` e `Prospecting` não tinham conta associada</strong>.
+            </p>
+            <p>
+              No CRM, o cadastro formal da empresa ocorria apenas no momento do faturamento! O modelo ingênuo não aprendia a prever o cliente; 
+              aprendia a prever se o formulário estava completo. No mundo real, <strong>condenaria 68% dos clientes novos à nota zero</strong>.
+              Implementamos o <strong>Princípio da Ortogonalidade Cadastral ($AEM$)</strong>, garantindo que o modelo seja 100% honesto e imune a vazamentos.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FLOATING 3D DRAGON MASCOT (DRACO AI COPILOT) -->
+  <aside class="draco-floating-mascot" id="draco-floating-mascot" title="DRACO AI // Clique para interagir com o Copiloto 3D">
+    <div class="mascot-canvas-wrapper">
+      <canvas id="draco-mascot-canvas"></canvas>
+    </div>
+    <div class="mascot-tag-badge">
+      <span class="pulse-indicator"></span>
+      <span class="mascot-title">DRACO AI</span>
+    </div>
+    <div class="mascot-hover-tooltip">Clique para interagir com o Copiloto 3D</div>
+  </aside>
+
+  <!-- COPILOT & DEAL DETAIL HUD DRAWER -->
+  <aside class="hud-drawer" id="deal-drawer" data-ui="deal-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <span class="drawer-tag">DRACO AI // COPILOTO DE REVENUE OPERATIONS</span>
+        <h3 id="drawer-opp-id">DIAGNÓSTICO TÁTICO</h3>
+      </div>
+      <button class="btn-drawer-close" id="btn-close-drawer">×</button>
+    </div>
+
+    <div class="drawer-content">
+
+      <!-- 3D DRAGON INTERACTIVE BANNER IN DRAWER -->
+      <div class="draco-hero-card">
+        <div class="draco-canvas-box">
+          <canvas id="draco-drawer-canvas"></canvas>
+        </div>
+        <div class="draco-hero-info">
+          <div class="draco-hero-name">DRACO // GUARDIÃO DE INTELIGÊNCIA REVOPS</div>
+          <div class="draco-hero-sub">Mascote 3D Conectado ao Motor Surv-Bayes ERV & OpenRouter</div>
+          <div class="draco-status-line">
+            <span class="status-dot-active"></span>
+            <span id="draco-status-text">Pronto para diagnóstico ou diálogo analítico.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE DRACO CHAT CONSOLE -->
+      <div class="drawer-section draco-chat-section">
+        <div class="ds-header">
+          <span>INTERAÇÃO DIRETA COM DRACO AI</span>
+          <span class="copilot-status" id="draco-chat-status">Pronto</span>
+        </div>
+
+        <div class="chat-messages-container" id="draco-chat-messages">
+          <div class="chat-message draco-msg">
+            <div class="chat-sender">DRACO AI // COPILOT:</div>
+            <div class="chat-bubble">
+              Saudações. Sou o <strong>DRACO</strong>, seu guardião de inteligência comercial. 
+              Clique em qualquer oportunidade na tabela para um diagnóstico individual com roteiro pronto de abordagem, 
+              ou digite uma consulta abaixo para orientações táticas sobre a carteira.
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-quick-actions">
+          <button class="btn-quick-chip" data-prompt="Quais oportunidades devo priorizar nesta segunda-feira?">Priorizar Segunda-Feira</button>
+          <button class="btn-quick-chip" data-prompt="Qual o impacto econômico dos zumbis e da regra dos 110 dias?">Impacto dos Zumbis</button>
+          <button class="btn-quick-chip" data-prompt="Explique como a ortogonalidade cadastral protegeu o modelo de data leakage">Auditoria de Leakage</button>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="input-draco-chat" class="tactical-input" placeholder="Pergunte ao Draco: 'Como destravar este deal?' ou 'Qual estratégia adotar?'...">
+          <button class="btn-tactical btn-primary" id="btn-send-draco-chat">ENVIAR</button>
+        </div>
+      </div>
+
+      <!-- DEAL TELEMETRY CARD -->
+      <div class="drawer-section" id="drawer-telemetry-section">
+        <div class="ds-header">TELEMETRIA DO DEAL SELECIONADO</div>
+        <div class="telemetry-grid">
+          <div class="tg-item">
+            <span class="tg-label">VENDEDOR</span>
+            <span class="tg-val" id="d-agent">-</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">PRODUTO</span>
+            <span class="tg-val" id="d-product">-</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">TICKET</span>
+            <span class="tg-val highlight-green" id="d-price">$0</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">CONTA CLIENTE</span>
+            <span class="tg-val" id="d-account">-</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">ESTÁGIO</span>
+            <span class="tg-val" id="d-stage">-</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">DIAS EM ABERTO</span>
+            <span class="tg-val" id="d-age">0 dias</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">PROB. CALIBRADA</span>
+            <span class="tg-val" id="d-prob">0%</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">THROUGHPUT ERV</span>
+            <span class="tg-val highlight-cyan" id="d-erv">$0.00/dia</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">LEAD SCORE</span>
+            <span class="tg-val highlight-cyan" id="d-score">0/100</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-label">SEGMENTO</span>
+            <span class="tg-val" id="d-quadrant">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATHEMATICAL SURV-BAYES DECOMPOSITION -->
+      <div class="drawer-section">
+        <div class="ds-header">DECOMPOSIÇÃO MATEMÁTICA SURV-BAYES</div>
+        <div class="decomp-list">
+          <div class="decomp-row">
+            <span>Probabilidade Base Prior P(Won):</span>
+            <strong id="d-prob-base">0.00%</strong>
+          </div>
+          <div class="decomp-row">
+            <span>Fator de Decaimento de Sobrevivência S(&tau;):</span>
+            <strong id="d-survival-factor">0.00x</strong>
+          </div>
+          <div class="decomp-row">
+            <span>Modulador Sazonal de Trimestre &Omega;<sub>Q</sub>:</span>
+            <strong id="d-quarter-modulator">1.00x</strong>
+          </div>
+          <div class="decomp-row">
+            <span>Multiplicador Cadastral Ortogonal (AEM):</span>
+            <strong id="d-account-multiplier">1.00x</strong>
+          </div>
+          <div class="decomp-row">
+            <span>Gargalos e Riscos Detectados:</span>
+            <span class="risk-badge" id="d-risks">-</span>
+          </div>
+          <div class="decomp-row">
+            <span>Drivers Positivos:</span>
+            <span class="driver-badge" id="d-drivers">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LLM COPILOT TERMINAL -->
+      <div class="drawer-section copilot-section">
+        <div class="ds-header">
+          <span>DIAGNÓSTICO ESTRATÉGICO INDIVIDUAL</span>
+          <span class="copilot-status" id="copilot-run-status">Pronto</span>
+        </div>
+
+        <div class="copilot-trigger-bar">
+          <button class="btn-tactical btn-primary" id="btn-run-copilot">
+            <span>GERAR ANÁLISE COMPLETA DO DEAL</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div class="copilot-model-hint" id="copilot-model-hint">Motor: Offline Determinístico Grounded</div>
+        </div>
+
+        <!-- COPILOT RESPONSE CARDS -->
+        <div class="copilot-output" id="copilot-output" style="display:none;">
+          <div class="co-card co-summary">
+            <div class="co-title"><span class="co-dot cyan"></span> RESUMO EXECUTIVO</div>
+            <div class="co-body" id="co-resumo">-</div>
+          </div>
+
+          <div class="co-card co-risk">
+            <div class="co-title"><span class="co-dot crimson"></span> DIAGNÓSTICO DE GARGALO & RISCO</div>
+            <div class="co-body" id="co-risco">-</div>
+          </div>
+
+          <div class="co-card co-leverage">
+            <div class="co-title"><span class="co-dot green"></span> ALAVANCA COMERCIAL DE FECHAMENTO</div>
+            <div class="co-body" id="co-alavanca">-</div>
+          </div>
+
+          <div class="co-card co-action">
+            <div class="co-title"><span class="co-dot amber"></span> PRÓXIMA AÇÃO TÁTICA IMEDIATA</div>
+            <div class="co-body" id="co-acao">-</div>
+          </div>
+
+          <div class="co-card co-script">
+            <div class="co-title-row">
+              <span class="co-title"><span class="co-dot blue"></span> ROTEIRO DE ABORDAGEM PERSONALIZADO</span>
+              <button class="btn-copy" id="btn-copy-script">COPIAR SCRIPT</button>
+            </div>
+            <pre class="script-box" id="co-script">-</pre>
+            <div class="script-hint">Pronto para envio direto via WhatsApp corporativo ou e-mail institucional.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+  <!-- LLM SETTINGS MODAL (OPENROUTER & OPENAI) -->
+  <div class="hud-modal-overlay" id="modal-settings">
+    <div class="hud-modal" data-ui="settings-modal">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="brand-lab">NEXUS COCKPIT // NEURAL INTEGRATION</div>
+          <h3>CONFIGURAÇÃO DO COPILOTO LLM</h3>
+        </div>
+        <button class="btn-modal-close" id="btn-close-settings">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-intro">
+          O Copiloto DRACO integra-se via <strong>OpenRouter</strong> para utilizar modelos avançados como 
+          <em>Nous Hermes 3 70B</em> ou <em>DeepHermes 8B</em>, com suporte opcional à OpenAI e fallback offline determinístico grounded sem custos.
+        </p>
+
+        <!-- PROVEDOR SELECTOR -->
+        <div class="form-group">
+          <label for="cfg-provider">PROVEDOR DE IA PREFERENCIAL</label>
+          <select id="cfg-provider" class="tactical-input">
+            <option value="openrouter" selected>OpenRouter (Hermes-3 / DeepHermes / Multi-Model)</option>
+            <option value="openai">OpenAI Direto (gpt-4o-mini / gpt-4o)</option>
+            <option value="offline">Offline Determinístico Grounded (Zero Custo / Sem API Externa)</option>
+          </select>
+        </div>
+
+        <!-- OPENROUTER API KEY -->
+        <div class="form-group" id="grp-openrouter-key">
+          <label for="cfg-openrouter-key">
+            <span>OPENROUTER API KEY</span>
+            <a href="https://openrouter.ai/keys" target="_blank" rel="noopener" class="label-link">Obter chave</a>
+          </label>
+          <input type="password" id="cfg-openrouter-key" class="tactical-input" placeholder="sk-or-v1-xxxxxxxxxxxxxxxx">
+          <div class="form-caption">Sua chave é armazenada com segurança apenas no seu navegador (localStorage).</div>
+        </div>
+
+        <!-- OPENROUTER MODEL SELECTION -->
+        <div class="form-group" id="grp-openrouter-model">
+          <label for="cfg-openrouter-model">MODELO OPENROUTER</label>
+          <select id="cfg-openrouter-model" class="tactical-input">
+            <option value="nousresearch/hermes-3-llama-3.1-70b" selected>nousresearch/hermes-3-llama-3.1-70b (Recomendado)</option>
+            <option value="nousresearch/deephermes-3-llama-3-8b-preview">nousresearch/deephermes-3-llama-3-8b-preview (Raciocínio)</option>
+            <option value="nousresearch/hermes-3-llama-3.1-405b">nousresearch/hermes-3-llama-3.1-405b (Capacidade Máxima)</option>
+            <option value="openai/gpt-4o-mini">openai/gpt-4o-mini</option>
+            <option value="anthropic/claude-3.5-sonnet">anthropic/claude-3.5-sonnet</option>
+            <option value="custom">Outro (Inserir identificador customizado...)</option>
+          </select>
+          <input type="text" id="cfg-custom-model" class="tactical-input" placeholder="Ex: meta-llama/llama-3.3-70b-instruct" style="display:none; margin-top:8px;">
+        </div>
+
+        <!-- OPENAI API KEY -->
+        <div class="form-group" id="grp-openai-key" style="display:none;">
+          <label for="cfg-openai-key">
+            <span>OPENAI API KEY</span>
+            <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="label-link">Obter chave</a>
+          </label>
+          <input type="password" id="cfg-openai-key" class="tactical-input" placeholder="sk-proj-xxxxxxxxxxxxxxxx">
+        </div>
+
+        <!-- TEMPERATURE SLIDER -->
+        <div class="form-group">
+          <div class="slider-header">
+            <label for="cfg-temp">TEMPERATURA (PRECISÃO VS CRIATIVIDADE)</label>
+            <span class="slider-val" id="val-temp">0.2</span>
+          </div>
+          <input type="range" id="cfg-temp" min="0.0" max="1.0" step="0.05" value="0.2" class="tactical-slider">
+          <div class="form-caption">Valores baixos (0.1 a 0.3) garantem fidelidade estrita aos dados matemáticos do CRM.</div>
+        </div>
+
+        <div class="modal-status-box" id="modal-status-box">
+          <span id="modal-status-text">[STATUS] Pronto para configurar. Sem chave, o sistema opera em modo Offline Grounded.</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-tactical btn-secondary" id="btn-reset-settings">RESTAURAR PADRÕES</button>
+        <button class="btn-tactical btn-primary" id="btn-save-settings">SALVAR CONFIGURAÇÃO</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
