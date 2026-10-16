@@ -1,0 +1,30 @@
+# Python Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# UV and Pip Cache
+.uv-cache/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter Checkpoints
+.ipynb_checkpoints/
+
+# System and IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets & Local configurations
+.env
+.env.local
+*.secret

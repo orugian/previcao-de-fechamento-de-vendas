@@ -1,0 +1,5 @@
+Estratégia,Receita Capturada (USD),% da Receita Total Q4,Lift vs Feeling,Ganho vs Ticket Ingênuo
+Motor Surv-Bayes ERV (Nossa Solução),"$877,572.00",69.2%,3.37x,"+$215,640.00"
+Ordenação por Maior Ticket ($),"$661,932.00",52.2%,2.54x,$0.00
+Ordenação por Probabilidade,"$551,844.00",43.5%,2.12x,"-$110,088.00"
+Escolha no Feeling (Aleatório),"$260,685.09",20.5%,1.00x,"-$401,246.91"

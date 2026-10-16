@@ -1,0 +1,21 @@
+# Desafio 003 — Lead Scorer & Decision Engine
+# Python Dependencies
+
+# Core Data & ML
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+lightgbm>=4.0.0
+shap>=0.42.0
+
+# Visualization & Notebook
+matplotlib>=3.8.0
+seaborn>=0.13.0
+plotly>=5.18.0
+ipykernel>=6.29.0
+nbformat>=5.9.0
+
+# App & Validation
+streamlit>=1.30.0
+pydantic>=2.5.0
+python-dotenv>=1.0.0
