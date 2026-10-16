@@ -57,7 +57,7 @@ Testado na coorte cega de 2.434 oportunidades abertas em 01/10/2017 sob capacida
 
 ## 🤖 4. Copiloto LLM com Contrato Estrito Pydantic
 
-O módulo em `src/copilot_llm.py` conecta a inteligência generativa aos fatores matemáticos do deal:
+O módulo em `workspace_solution/src/copilot_llm.py` conecta a inteligência generativa aos fatores matemáticos do deal:
 - Consome estritamente: ID, ticket, dias em negociação, probabilidade calibrada, throughput ERV, quadrante da matriz e playbooks.
 - Retorna um esquema estruturado via `DealCopilotAnalysis`:
   - `resumo_executivo`
@@ -69,7 +69,16 @@ O módulo em `src/copilot_llm.py` conecta a inteligência generativa aos fatores
 
 ---
 
-## 💻 5. Como Executar a Solução em 1 Comando
+## 📑 5. Governança, Process Log e Revisão Adversarial
+
+Para atender a todos os critérios eliminatórios do G4 Educação, a entrega conta com dois relatórios detalhados:
+
+- 📝 **[Process Log Oficial (Uso Estratégico de IA)](docs/process-log.md):** Registra a decomposição do problema, o conselho de subagentes independentes, a detecção e correção de alucinações e os testes empíricos de leakage.
+- 🛡️ **[Relatório de Revisão Adversarial (Stress-Test)](docs/revisao-adversarial.md):** Auditoria cética simulando a banca avaliadora do G4, testando vetores de falha, resiliência do software e conformidade com a rubrica oficial.
+
+---
+
+## 💻 6. Como Executar a Solução em 1 Comando
 
 ### Pré-requisitos
 Ambiente Python 3.11 instalado com dependências gerenciadas via `uv`:
@@ -94,7 +103,7 @@ jupyter notebook workspace_solution/notebooks/01_eda_preprocessing_and_modeling.
 
 ---
 
-## 📂 6. Estrutura do Workspace Isolado
+## 📂 7. Estrutura do Workspace Isolado
 
 ```text
 workspace_solution/
@@ -102,6 +111,10 @@ workspace_solution/
 ├── requirements.txt                   # Dependências do projeto
 ├── README.md                          # Este documento de referência
 ├── build_and_run_notebook.py          # Script de automação e validação do notebook
+│
+├── docs/                              # Relatórios formais de governança e avaliação
+│   ├── process-log.md                 # Process Log oficial com evidências do uso de IA
+│   └── revisao-adversarial.md         # Stress-test adversarial da entrega
 │
 ├── src/                               # Módulos Python reutilizáveis
 │   ├── data_loader.py                 # Carga e higienização das 4 tabelas

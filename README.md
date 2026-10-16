@@ -69,7 +69,16 @@ O módulo em `workspace_solution/src/copilot_llm.py` conecta a inteligência gen
 
 ---
 
-## 💻 5. Como Executar a Solução em 1 Comando
+## 📑 5. Governança, Process Log e Revisão Adversarial
+
+Para atender a todos os critérios eliminatórios do G4 Educação, a entrega conta com dois relatórios detalhados:
+
+- 📝 **[Process Log Oficial (Uso Estratégico de IA)](docs/process-log.md):** Registra a decomposição do problema, o conselho de subagentes independentes, a detecção e correção de alucinações e os testes empíricos de leakage.
+- 🛡️ **[Relatório de Revisão Adversarial (Stress-Test)](docs/revisao-adversarial.md):** Auditoria cética simulando a banca avaliadora do G4, testando vetores de falha, resiliência do software e conformidade com a rubrica oficial.
+
+---
+
+## 💻 6. Como Executar a Solução em 1 Comando
 
 ### Pré-requisitos
 Ambiente Python 3.11 instalado com dependências gerenciadas via `uv`:
